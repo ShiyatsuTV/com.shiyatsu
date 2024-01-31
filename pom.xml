@@ -15,4 +15,22 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+    <modules>
+        <module>log4j-dependencies</module>
+
+        <module>logger</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.shiyatsu</groupId>
+                <artifactId>shiyatsu-log4j-dependencies</artifactId>
+                <version>1.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+	
 </project>
