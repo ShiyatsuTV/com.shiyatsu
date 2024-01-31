@@ -46,6 +46,35 @@ public class HttpUtil {
     }
 
     /**
+	 * Overloaded method for performing an HTTP request with a default UTF-8 charset.
+	 *
+	 * @param uri      The URI to send the request to.
+	 * @param method   The HTTP method (GET, POST, etc.).
+	 * @param headers  A map of HTTP headers.
+	 * @param body     The request body as a string.
+	 * @param timeout  An optional timeout duration for the request.
+	 * @return A WebServiceResponse containing the HTTP response details.
+	 * @throws HttpException if an error occurs during the HTTP request.
+	 */
+	public static WebServiceResponse doRequest(String uri, HttpMethod method, Map<String, String> headers, String body, Optional<Duration> timeout) throws HttpException {
+	    return doRequest(uri, method, headers, body, StandardCharsets.UTF_8, timeout);
+	}
+	
+	/**
+     * Overloaded method for performing an HTTP request without a request body.
+     *
+     * @param uri      The URI to send the request to.
+     * @param method   The HTTP method (GET, POST, etc.).
+     * @param headers  A map of HTTP headers.
+     * @param timeout  An optional timeout duration for the request.
+     * @return A WebServiceResponse containing the HTTP response details.
+     * @throws HttpException if an error occurs during the HTTP request.
+     */
+    public static WebServiceResponse doRequest(String uri, HttpMethod method, Map<String, String> headers, Optional<Duration> timeout) throws HttpException {
+    	return doRequest(uri, method, headers, null, null, timeout);
+    }
+
+	/**
      * Perform an HTTP request with a specified URI, HTTP method, headers, request body, charset, and timeout.
      *
      * @param uri      The URI to send the request to.
@@ -77,39 +106,6 @@ public class HttpUtil {
     }
 
     /**
-     * Overloaded method for performing an HTTP request with a default UTF-8 charset.
-     *
-     * @param uri      The URI to send the request to.
-     * @param method   The HTTP method (GET, POST, etc.).
-     * @param headers  A map of HTTP headers.
-     * @param body     The request body as a string.
-     * @param timeout  An optional timeout duration for the request.
-     * @return A WebServiceResponse containing the HTTP response details.
-     * @throws HttpException if an error occurs during the HTTP request.
-     */
-    public static WebServiceResponse doRequest(String uri, HttpMethod method, Map<String, String> headers, String body, Optional<Duration> timeout) throws HttpException {
-        return doRequest(uri, method, headers, body, StandardCharsets.UTF_8, timeout);
-    }
-
-    /**
-     * Overloaded method for performing an HTTP request without a request body.
-     *
-     * @param uri      The URI to send the request to.
-     * @param method   The HTTP method (GET, POST, etc.).
-     * @param headers  A map of HTTP headers.
-     * @param timeout  An optional timeout duration for the request.
-     * @return A WebServiceResponse containing the HTTP response details.
-     * @throws HttpException if an error occurs during the HTTP request.
-     */
-    public static WebServiceResponse doRequest(String uri, HttpMethod method, Map<String, String> headers, Optional<Duration> timeout) throws HttpException {
-        try {
-            return executeRequest(build(uri, method, headers, timeout));
-        } catch (IOException | InterruptedException | URISyntaxException e) {
-            throw new HttpException("Error executing HTTP request", e);
-        }
-    }
-
-    /**
      * Build an HTTP request with a specified URI, HTTP method, headers, request body, and timeout.
      *
      * @param uri      The URI to send the request to.
@@ -122,11 +118,14 @@ public class HttpUtil {
      * @throws IllegalArgumentException if the method or timeout is invalid.
      */
     public static Builder build(String uri, HttpMethod method, Map<String, String> headers, byte[] body, Optional<Duration> timeout) throws URISyntaxException, IllegalArgumentException {
-        Builder builder = build(uri, method, headers, timeout);
+    	Builder builder = HttpRequest.newBuilder().uri(new URI(uri));
         if (body != null && body.length > 0) {
             builder.method(method.getName(), HttpRequest.BodyPublishers.ofByteArray(body));
         } else {
             builder.method(method.getName(), HttpRequest.BodyPublishers.noBody());
+        }
+        if (headers != null) {
+        	headers.forEach((key, value) -> builder.header(key, value));
         }
         timeout.ifPresent(t -> builder.timeout(t));
         return builder;
@@ -144,12 +143,7 @@ public class HttpUtil {
      * @throws IllegalArgumentException if the method or timeout is invalid.
      */
     public static Builder build(String uri, HttpMethod method, Map<String, String> headers, Optional<Duration> timeout) throws URISyntaxException, IllegalArgumentException {
-        Builder builder = HttpRequest.newBuilder().uri(new URI(uri));
-        if (headers != null) {
-        	headers.forEach((key, value) -> builder.header(key, value));
-        }
-        timeout.ifPresent(t -> builder.timeout(t));
-        return builder;
+        return build(uri, method, headers, null, timeout);
     }
 
     /**

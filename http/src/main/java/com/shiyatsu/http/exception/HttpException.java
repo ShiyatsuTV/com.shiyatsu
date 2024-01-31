@@ -5,7 +5,9 @@ package com.shiyatsu.http.exception;
  */
 public class HttpException extends Exception {
 
-    /**
+	private static final long serialVersionUID = -6119420498948663480L;
+
+	/**
      * Constructor for HttpException with a message.
      *
      * @param message The error message.
