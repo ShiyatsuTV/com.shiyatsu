@@ -15,26 +15,38 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-    <modules>
+	<modules>
 		<!-- pom dependencies -->
-        <module>log4j-dependencies</module>
+		<module>log4j-dependencies</module>
 
 		<!-- modules -->
-        <module>logger</module>
-        <module>http</module>
-        <module>examples</module>
-    </modules>
+		<module>logger</module>
+		<module>http</module>
+		<module>examples</module>
+	</modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.shiyatsu</groupId>
-                <artifactId>shiyatsu-log4j-dependencies</artifactId>
-                <version>1.0.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.shiyatsu</groupId>
+				<artifactId>shiyatsu-log4j-dependencies</artifactId>
+				<version>1.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.6.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 </project>
