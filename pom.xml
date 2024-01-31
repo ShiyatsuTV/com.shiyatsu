@@ -16,9 +16,12 @@
 	</properties>
 
     <modules>
+		<!-- pom dependencies -->
         <module>log4j-dependencies</module>
 
+		<!-- modules -->
         <module>logger</module>
+        <module>http</module>
     </modules>
 
     <dependencyManagement>
