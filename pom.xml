@@ -17,11 +17,14 @@
 
 	<modules>
 		<!-- pom dependencies -->
-		<module>log4j-dependencies</module>
+		<module>dependencies</module>
 
 		<!-- modules -->
 		<module>logger</module>
 		<module>http</module>
+		<module>twitch-client-irc</module>
+
+		<!-- Executable jars -->
 		<module>examples</module>
 	</modules>
 
@@ -29,7 +32,21 @@
 		<dependencies>
 			<dependency>
 				<groupId>com.shiyatsu</groupId>
-				<artifactId>shiyatsu-log4j-dependencies</artifactId>
+				<artifactId>com.shiyatsu.log4j.dependencies</artifactId>
+				<version>1.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.shiyatsu</groupId>
+				<artifactId>com.shiyatsu.google.gson.dependencies</artifactId>
+				<version>1.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.shiyatsu</groupId>
+				<artifactId>com.shiyatsu.twitch4j.dependencies</artifactId>
 				<version>1.0.0</version>
 				<type>pom</type>
 				<scope>import</scope>

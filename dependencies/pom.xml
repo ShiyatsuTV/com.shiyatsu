@@ -6,12 +6,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.shiyatsu</groupId>
-	<artifactId>com.shiyatsu.examples</artifactId>
+	<artifactId>com.shiyatsu.dependencies</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>http-example</module>
+		<module>log4j</module>
+		<module>google-gson</module>
+		<module>twitch4j</module>
 	</modules>
 
 </project>

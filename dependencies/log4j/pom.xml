@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.shiyatsu</groupId>
-    <artifactId>shiyatsu-log4j-dependencies</artifactId>
+    <artifactId>com.shiyatsu.log4j.dependencies</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
