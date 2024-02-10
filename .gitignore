@@ -23,6 +23,9 @@
 hs_err_pid*
 replay_pid*
 
+# visual studio code folders/files
+.vscode*
+
 # eclipse folders/files
 .settings
 .classpath
