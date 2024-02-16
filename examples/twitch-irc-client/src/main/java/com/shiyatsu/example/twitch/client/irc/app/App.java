@@ -11,7 +11,7 @@ public class App {
 
 	public static void main(String[] args) {
 		String channelToJoin = "shiyatsutv";
-		TwitchIRCClient client = TwitchIRCClient.getInstance("","", "");
+		TwitchIRCClient client = TwitchIRCClient.getInstance("", "", "");
 		client.init(App::onMessage);
 		client.joinChannel(channelToJoin);
 		client.sendMessage(channelToJoin, "Test");

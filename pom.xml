@@ -18,22 +18,18 @@
 	<modules>
 		<!-- pom dependencies -->
 		<module>dependencies</module>
-
-		<!-- modules -->
-		<module>logger</module>
-		<module>http</module>
-		<module>twitch-client-irc</module>
+		<module>libs</module>
 	</modules>
 
 	<profiles>
 		<profile>
+			<id>examples</id>
 			<activation>
 				<property>
 					<name>examples</name>
 				</property>
                 <activeByDefault>false</activeByDefault>
             </activation>
-            <id>examples</id>
             <modules>
                 <module>examples</module>
             </modules>
