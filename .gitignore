@@ -30,3 +30,6 @@ replay_pid*
 .settings
 .classpath
 .project
+
+# IJ folders/files
+.idea
