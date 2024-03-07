@@ -1,5 +1,7 @@
 # Shiyatsu
 
+This repository contains the libraries that I use in my personal projects
+
 ## JAVA version 
 
 openjdk 17.0.2 2022-01-18  
