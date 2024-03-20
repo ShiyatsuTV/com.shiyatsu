@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<RollingFile name="rollingFile" fileName="logs/example.log" filePattern="logs/example-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%d{MMM dd HH:mm:ss,SSS} [%t] %-5p %c - %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="500 MB" />
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+
+		<Console name="Console">
+			<PatternLayout pattern="%d{MMM dd HH:mm:ss,SSS} [%t] %-5p %c - %m%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<logger name="com.shiyatsu" additivity="false" level="info">
+            <appender-ref ref="rollingFile" />
+            <appender-ref ref="Console" />
+        </logger>
+		<root level="debug">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="rollingFile" />
+		</root>
+	</Loggers>
+</Configuration>

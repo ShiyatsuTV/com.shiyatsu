@@ -13,6 +13,7 @@
 	<modules>
 		<module>http-example</module>
         <module>twitch-irc-client</module>
+		<module>db-handler</module>
 	</modules>
 
 </project>
