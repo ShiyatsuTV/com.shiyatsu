@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CipherUtilTest {
 
     @Test
-    public void testEncryptDecrypt() throws Exception {
+    void testEncryptDecrypt() throws Exception {
         String testKey = "1234567891564874";
         String testString = "Hello, World!";
         CipherUtil.initSecretKey(testKey);

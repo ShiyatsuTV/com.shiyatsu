@@ -21,7 +21,7 @@ public class SecretKeyGeneratorUtil {
     /**
      * The maximum length of the generated secret key string.
      */
-    private static final int maxLength = 16;
+    private static final int maxLength = 128;
 
     /**
      * Generates a random string of a predefined length to be used as a secret key.

@@ -1,12 +1,10 @@
 package com.shiyatsu.cipher.util;
 
 import com.shiyatsu.cipher.exception.CipherException;
-import com.shiyatsu.logger.ILoggerService;
-import com.shiyatsu.logger.impl.LoggerService;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -16,21 +14,19 @@ import java.util.Base64;
  * It uses AES algorithm with CBC mode and PKCS5Padding for encryption and decryption.
  */
 public class CipherUtil {
-
-	/**
-	 * Logger service for logging errors and information.
-	 */
-	private static final ILoggerService logger = LoggerService.getLoggingService();
-
 	/**
 	 * The transformation for the cipher, specifying algorithm, mode, and padding.
 	 */
-	private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+	private static final String TRANSFORMATION = "AES/GCM/NoPadding";
 
 	/**
 	 * The secret key for encryption and decryption.
 	 */
 	private static SecretKey secretKey = null;
+
+	private CipherUtil() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 
 	/**
 	 * Initializes the secret key with a specified string.
@@ -54,34 +50,33 @@ public class CipherUtil {
 	/**
 	 * Converts a Base64 encoded IV parameter string back to a byte array.
 	 *
-	 * @param IvParameter The Base64 encoded IV parameter string.
+	 * @param ivParameter The Base64 encoded IV parameter string.
 	 * @return The byte array of the IV parameter.
 	 */
-	private static byte[] getIVParameterSpecFromString(String IvParameter) {
-		return Base64.getDecoder().decode(IvParameter);
+	private static byte[] getIVParameterSpecFromString(String ivParameter) {
+		return Base64.getDecoder().decode(ivParameter);
 	}
 
 	/**
 	 * Encrypts a string input with the specified IV string.
 	 *
 	 * @param input The string to encrypt.
-	 * @param IvStr The IV string used for encryption.
+	 * @param ivStr The IV string used for encryption.
 	 * @return The encrypted string, Base64 encoded.
 	 * @throws CipherException If encryption fails or the secret key is not initialized.
 	 */
-	public static String encrypt(String input, String IvStr) throws CipherException {
+	public static String encrypt(String input, String ivStr) throws CipherException {
 		if (secretKey == null) {
 			throw new CipherException("Secret key is not initialized");
 		}
 		try {
 			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(getIVParameterSpecFromString(IvStr));
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, getIVParameterSpecFromString(ivStr));
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
 			byte[] encryptedBytes = cipher.doFinal(input.getBytes());
 			return Base64.getEncoder().encodeToString(encryptedBytes);
 		} catch (Exception e) {
-			logger.error(CipherUtil.class, "Fail to encrypt input", e);
-			throw new CipherException("Fail to encrypt input : " + e.getMessage());
+			throw new CipherException("Fail to encrypt input : " + e.getMessage(), e);
 		}
 	}
 
@@ -89,24 +84,24 @@ public class CipherUtil {
 	 * Decrypts a Base64 encoded encrypted string with the specified IV string.
 	 *
 	 * @param encrypted The encrypted string to decrypt, Base64 encoded.
-	 * @param IvStr The IV string used for decryption.
+	 * @param ivStr The IV string used for decryption.
 	 * @return The decrypted string.
 	 * @throws CipherException If decryption fails or the secret key is not initialized.
 	 */
-	public static String decrypt(String encrypted, String IvStr) throws CipherException {
+	public static String decrypt(String encrypted, String ivStr) throws CipherException {
 		if (secretKey == null) {
 			throw new CipherException("Secret key is not initialized");
 		}
 		try {
 			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(getIVParameterSpecFromString(IvStr));
-			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, getIVParameterSpecFromString(ivStr)); // 128-bit auth tag length
+			cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
 			byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encrypted));
 			return new String(decryptedBytes);
 		} catch (Exception e) {
-			logger.error(CipherUtil.class, "Fail to decrypt input", e);
 			throw new CipherException("Fail to decrypt input : " + e.getMessage());
 		}
+
 	}
 
 	/**
@@ -114,10 +109,10 @@ public class CipherUtil {
 	 *
 	 * @return An IvParameterSpec instance with a randomly generated IV.
 	 */
-	private static IvParameterSpec generateIv() {
-		byte[] iv = new byte[16];
+	private static GCMParameterSpec generateIv() {
+		byte[] iv = new byte[128];
 		new SecureRandom().nextBytes(iv);
-		return new IvParameterSpec(iv);
+		return new GCMParameterSpec(128, iv);
 	}
 }
 
