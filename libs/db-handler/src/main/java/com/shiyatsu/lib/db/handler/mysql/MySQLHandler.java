@@ -29,4 +29,8 @@ public class MySQLHandler extends DbHandler {
             throw new DatabaseException(String.format("Fail to connect to MYSQL Database [ %s ] ", url), e);
         }
     }
+
+    protected String escape(String s) {
+        return s.replace("\\", "\\\\").replace("'", "\\'");
+    }
 }
