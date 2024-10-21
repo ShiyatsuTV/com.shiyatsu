@@ -10,8 +10,8 @@ public class App {
 	private static ILoggerService logger = LoggerService.getLoggingService();
 
 	public static void main(String[] args) {
-		String channelToJoin = "";
-		TwitchTmiClient client = TwitchTmiClient.getInstance(""); // https://twitchapps.com/tmi/
+		String channelToJoin = "baout_";
+		TwitchTmiClient client = TwitchTmiClient.getInstance("swjx3jxlngxv2mqbo1ateqz71t3700", "nqxv0uoaqkr4t31adwdykqe8xdgd5z", "rjtfc4nl36hpzgt0l9b7pl9q89isdk"); // https://twitchapps.com/tmi/
 		client.init(App::onMessage);
 		client.joinChannel(channelToJoin);
 		client.sendMessage(channelToJoin, "Test");

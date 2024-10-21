@@ -3,10 +3,13 @@ package com.shiyatsu.twitch.client.irc;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import com.github.philippheuer.credentialmanager.CredentialManager;
+import com.github.philippheuer.credentialmanager.CredentialManagerBuilder;
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
+import com.github.twitch4j.auth.providers.TwitchIdentityProvider;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.shiyatsu.logger.ILoggerService;
 import com.shiyatsu.logger.impl.LoggerService;
@@ -19,6 +22,8 @@ public class TwitchTmiClient {
 	private static final ILoggerService logger = LoggerService.getLoggingService();
 	private static TwitchTmiClient instance = null;
 
+	private String clientId = null;
+	private String clientSecret = null;
 	private String tmiToken = null;
 	private TwitchClient twitchClient = null;
 
@@ -27,7 +32,9 @@ public class TwitchTmiClient {
      *
      * @param tmiToken The TMI token for accessing Twitch chat functionalities.
      */
-	private TwitchTmiClient(String tmiToken) {
+	private TwitchTmiClient(String clientId, String clientSecret, String tmiToken) {
+		this.clientId = clientId;
+		this.clientSecret = clientSecret;
 		this.tmiToken = tmiToken;
 	}
 
@@ -37,9 +44,9 @@ public class TwitchTmiClient {
      * @param tmiToken The TMI token for accessing Twitch chat functionalities.
      * @return The singleton instance of TwitchTmiClient.
      */
-	public static synchronized TwitchTmiClient getInstance(String tmiToken) {
+	public static synchronized TwitchTmiClient getInstance(String clientId, String clientSecret, String tmiToken) {
 		if (instance == null) {
-			instance = new TwitchTmiClient(tmiToken);
+			instance = new TwitchTmiClient(clientId, clientSecret, tmiToken);
 		}
 		return instance;
 	}
@@ -63,7 +70,11 @@ public class TwitchTmiClient {
      * @param messageEventHandler The consumer to handle message events. If null, a default handler is used.
      */
 	public void init(Consumer<ChannelMessageEvent> messageEventHandler) {
+		CredentialManager credentialManager = CredentialManagerBuilder.builder().build();
+		credentialManager.registerIdentityProvider(new TwitchIdentityProvider(clientId, clientSecret, ""));
 		OAuth2Credential oAuthCredential = new OAuth2Credential("twitch", tmiToken);
+		twitchClient = TwitchClientBuilder.builder().withClientId(clientId).withClientSecret(clientSecret)
+				.withEnableChat(true).withChatAccount(oAuthCredential).build();
 		twitchClient = TwitchClientBuilder.builder().withEnableChat(true).withChatAccount(oAuthCredential).build();
 		SimpleEventHandler eventHandler = twitchClient.getEventManager().getEventHandler(SimpleEventHandler.class);
 		eventHandler.onEvent(ChannelMessageEvent.class, Objects.requireNonNullElseGet(messageEventHandler, () -> this::onMessage));
