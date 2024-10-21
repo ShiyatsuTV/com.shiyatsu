@@ -30,6 +30,8 @@ public class TwitchTmiClient {
 	/**
      * Private constructor for TwitchTmiClient to prevent external instantiation.
      *
+	 * @param clientId     The client ID for Twitch API access.
+	 * @param clientSecret The client secret for Twitch API access.
      * @param tmiToken The TMI token for accessing Twitch chat functionalities.
      */
 	private TwitchTmiClient(String clientId, String clientSecret, String tmiToken) {
@@ -41,6 +43,8 @@ public class TwitchTmiClient {
 	/**
      * Returns the singleton instance of TwitchTmiClient, creating it if necessary.
      *
+	 * @param clientId     The client ID for Twitch API access.
+	 * @param clientSecret The client secret for Twitch API access.
      * @param tmiToken The TMI token for accessing Twitch chat functionalities.
      * @return The singleton instance of TwitchTmiClient.
      */
