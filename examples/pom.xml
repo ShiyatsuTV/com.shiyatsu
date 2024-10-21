@@ -12,7 +12,7 @@
 
 	<modules>
 		<module>http-example</module>
-        <module>twitch-irc-client</module>
+        <module>twitch-tmi</module>
 		<module>db-handler</module>
 	</modules>
 

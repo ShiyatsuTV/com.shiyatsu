@@ -1,68 +1,56 @@
 package com.shiyatsu.twitch.client.irc;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
-import com.github.philippheuer.credentialmanager.CredentialManager;
-import com.github.philippheuer.credentialmanager.CredentialManagerBuilder;
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
-import com.github.twitch4j.auth.providers.TwitchIdentityProvider;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.shiyatsu.logger.ILoggerService;
 import com.shiyatsu.logger.impl.LoggerService;
 
 /**
- * Represents a singleton client for interacting with Twitch IRC, encapsulating authentication and communication logic.
- * 
  * @author Shiyatsu
  */
-public class TwitchIRCClient {
+public class TwitchTmiClient {
 
-	private static ILoggerService logger = LoggerService.getLoggingService();
-	private static TwitchIRCClient instance = null;
+	private static final ILoggerService logger = LoggerService.getLoggingService();
+	private static TwitchTmiClient instance = null;
 
-	private String clientId = null;
-	private String clientSecret = null;
 	private String tmiToken = null;
 	private TwitchClient twitchClient = null;
 
 	/**
-     * Private constructor for TwitchIRCClient to prevent external instantiation.
+     * Private constructor for TwitchTmiClient to prevent external instantiation.
      *
-     * @param clientId     The client ID for Twitch API access.
-     * @param clientSecret The client secret for Twitch API access.
-     * @param tmiToken     The TMI token for accessing Twitch chat functionalities. https://twitchapps.com/tmi/
+     * @param tmiToken The TMI token for accessing Twitch chat functionalities.
      */
-	private TwitchIRCClient(String clientId, String clientSecret, String tmiToken) {
-		this.clientId = clientId;
-		this.clientSecret = clientSecret;
+	private TwitchTmiClient(String tmiToken) {
 		this.tmiToken = tmiToken;
 	}
 
 	/**
-     * Returns the singleton instance of TwitchIRCClient, creating it if necessary.
+     * Returns the singleton instance of TwitchTmiClient, creating it if necessary.
      *
-     * @param clientId     The client ID for Twitch API access.
-     * @param clientSecret The client secret for Twitch API access.
-     * @param tmiToken     The TMI token for accessing Twitch chat functionalities. https://twitchapps.com/tmi/
-     * @return The singleton instance of TwitchIRCClient.
+     * @param tmiToken The TMI token for accessing Twitch chat functionalities.
+     * @return The singleton instance of TwitchTmiClient.
      */
-	public static synchronized TwitchIRCClient getInstance(String clientId, String clientSecret, String tmiToken) {
+	public static synchronized TwitchTmiClient getInstance(String tmiToken) {
 		if (instance == null) {
-			instance = new TwitchIRCClient(clientId, clientSecret, tmiToken);
+			instance = new TwitchTmiClient(tmiToken);
 		}
 		return instance;
 	}
 
 	/**
-     * Returns the already-initialized singleton instance of TwitchIRCClient.
+     * Returns the already-initialized singleton instance of TwitchTmiClient.
      *
-     * @return The singleton instance of TwitchIRCClient.
+     * @return The singleton instance of TwitchTmiClient.
      * @throws IllegalStateException if the instance has not been initialized yet.
      */
-	public static synchronized TwitchIRCClient getInstance() {
+	public static synchronized TwitchTmiClient getInstance() {
 		if (instance == null) {
 			throw new IllegalStateException("Instance not initialized, use getInstance(String, String) in first.");
 		}
@@ -75,17 +63,10 @@ public class TwitchIRCClient {
      * @param messageEventHandler The consumer to handle message events. If null, a default handler is used.
      */
 	public void init(Consumer<ChannelMessageEvent> messageEventHandler) {
-		CredentialManager credentialManager = CredentialManagerBuilder.builder().build();
-		credentialManager.registerIdentityProvider(new TwitchIdentityProvider(clientId, clientSecret, ""));
 		OAuth2Credential oAuthCredential = new OAuth2Credential("twitch", tmiToken);
-		twitchClient = TwitchClientBuilder.builder().withClientId(clientId).withClientSecret(clientSecret)
-				.withEnableChat(true).withChatAccount(oAuthCredential).build();
+		twitchClient = TwitchClientBuilder.builder().withEnableChat(true).withChatAccount(oAuthCredential).build();
 		SimpleEventHandler eventHandler = twitchClient.getEventManager().getEventHandler(SimpleEventHandler.class);
-		if (messageEventHandler != null) {
-			eventHandler.onEvent(ChannelMessageEvent.class, messageEventHandler);
-		} else {
-			eventHandler.onEvent(ChannelMessageEvent.class, this::onMessage);
-		}
+		eventHandler.onEvent(ChannelMessageEvent.class, Objects.requireNonNullElseGet(messageEventHandler, () -> this::onMessage));
 	}
 
 	/**
@@ -125,24 +106,6 @@ public class TwitchIRCClient {
 		twitchClient.getChat().sendMessage(channel, message);
 	}
 	
-	// Getter and setter methods...
-
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getClientSecret() {
-		return clientSecret;
-	}
-
-	public void setClientSecret(String clientSecret) {
-		this.clientSecret = clientSecret;
-	}
-
 	public TwitchClient getTwitchClient() {
 		return twitchClient;
 	}

@@ -14,7 +14,7 @@
 		<module>logger</module>
 		<module>http</module>
 		<module>message-queue-consumer</module>
-		<module>twitch-client-irc</module>
+		<module>twitch-client-tmi</module>
 		<module>db-handler</module>
 		<module>cipher</module>
 	</modules>
