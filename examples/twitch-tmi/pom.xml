@@ -36,7 +36,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.shiyatsu.example.twitch.client.irc.app.App</mainClass>
+							<mainClass>com.shiyatsu.example.twitch.client.tmi.app.App</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
