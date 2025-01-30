@@ -34,6 +34,34 @@
                 <module>examples</module>
             </modules>
         </profile>
+		<profile>
+			<id>vulnerability</id>
+			<activation>
+				<property>
+					<name>vulnerability</name>
+				</property>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.owasp</groupId>
+						<artifactId>dependency-check-maven</artifactId>
+						<version>12.0.1</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<failBuildOnCVSS>8</failBuildOnCVSS>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>
