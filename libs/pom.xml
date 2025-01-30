@@ -17,6 +17,7 @@
 		<module>twitch-client-tmi</module>
 		<module>db-handler</module>
 		<module>cipher</module>
+		<module>ssl</module>
 	</modules>
 
 </project>
