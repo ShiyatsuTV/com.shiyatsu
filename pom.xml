@@ -19,6 +19,7 @@
 		<!-- pom dependencies -->
 		<module>dependencies</module>
 		<module>libs</module>
+		<module>examples</module>
 	</modules>
 
 	<profiles>
