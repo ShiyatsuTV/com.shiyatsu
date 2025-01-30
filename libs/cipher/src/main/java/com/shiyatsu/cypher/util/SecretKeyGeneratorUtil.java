@@ -1,4 +1,4 @@
-package com.shiyatsu.cipher.util;
+package com.shiyatsu.cypher.util;
 
 import java.security.SecureRandom;
 
